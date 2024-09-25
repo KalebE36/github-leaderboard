@@ -1,9 +1,15 @@
 # Github Leaderboard
 
-This Django website allows people to login with their Github accounts, pull commits from Github repos,
-and rank users by the number of commits.
+A Django-based web application that allows users to log in with their GitHub accounts, pull commit data from GitHub repositories, and rank participants based on the number of commits. This project is built using Docker and deployed on Heroku.
 
-[Application is deployed at Heroku.](https://fierce-shore-14743.herokuapp.com/)
+- [Application is deployed at Heroku.](https://fierce-shore-14743.herokuapp.com/)
+
+## Features
+- Login via GitHub OAuth: Users can authenticate using their GitHub credentials.
+- Commit Tracking: Fetch commits from GitHub repositories and rank users based on their contributions.
+- Leaderboard: Displays the ranking of participants based on their commit count.
+- Admin Panel: Manage the database, users, and GitHub settings via Django’s built-in admin interface.
+
 
 ## Demo
 
@@ -21,9 +27,20 @@ Important locations are `config` which contains top level information about Djan
 installed apps. `requirements` contain the Python packages that Docker uses. `compose` is for
 Docker. `github_leaderboard` contains all the Django files that you would modify.
 
-### Setup pre-commit hooks
+### Installation
+Follow these steps to set up the application locally.
+Prerequisites:
+-    Docker & Docker Compose installed
+-   Python 3.8+ (optional, for local virtual environment setup)
 
-This runs pre-commit before you commit with flake8 and black autoformatting. If you have flake8 errors,
+1. Clone the Repository
+```bash
+git clone https://github.com/username/github-leaderboard.git
+cd github-leaderboard
+```
+2. Setup pre-commit hooks
+
+   This runs pre-commit before you commit with flake8 and black autoformatting. If you have flake8 errors,
 the code will fail to commit.
 
 ```bash
@@ -33,15 +50,15 @@ pip install pre-commit
 pre-commit install
 ```
 
-### Setup docker environment from our project dependencies
+3. Setup docker environment from our project dependencies
 
-1. Build the docker containers
+   1. Build the docker containers
 
    ```bash
    docker-compose -f local.yml build
    ```
 
-2. If in production, we can easily change things by running the production setting files.
+   2. If in production, we can easily change things by running the production setting files.
 
    ```bash
    docker-compose -f production.yml build
@@ -61,21 +78,6 @@ pre-commit install
 
 2. Add the dependency to Django by modifying the `INSTALLED_APPS` array within the `config/settings/local.py`
    or `config/settings/production.py` file
-
-### Run server @ localhost:8000
-
-1. Running the local setup. This runs both Django and Postgres.
-
-   ```bash
-   docker-compose -f local.yml up
-   ```
-
-2. If in production, we can run it easily as well. This runs additional things for running things in production
-   environment.
-
-   ```bash
-   docker-compose -f production.yml up
-   ```
 
 ### Manage database from admin panel
 
@@ -150,15 +152,28 @@ Do not use `localhost` for things. It breaks github redirect.
 
 ## Heroku deploying
 
-[Follow this guide.](https://cookiecutter-django.readthedocs.io/en/latest/deployment-on-heroku.html)
-Ignore the settings to add AWS because we host staticfiles from the server itself using WhiteNoise.
+To deploy this project on Heroku:
+1. Install the Heroku CLI.
+2. Log In
+   ```bash
+   heroku login
+   ```
+3. Create a new Heroku app:
+   ```bash
+   heroku create github-leaderboard
+   ```
+4. Push the code to Heroku:
+   ```bash
+   git push heroku main
+   ```
+5. Ensure that static files are handled by WhiteNoise, and follow the Heroku guide for more detailed instructions.
 
 Note that `git push heroku master` should be `git push heroku main`.
 
 ## Project Design Documentation
 
-### User table explaination:
+User Table Explanation:
 
-Django provides a default User table in the database which automatically integrates with authorization and the admin
-panel. We will use this User for our app, but extend it to add additional functionality such as GitHub info and roles.
-These users are represented by the `ExtendedUser` class which has a One-to-One relationship with the default User.
+This project uses Django's default ```User``` table, extended with the ```ExtendedUser``` class to add GitHub-specific data and user roles. The ExtendedUser class has a one-to-one relationship with the default Django user model.
+
+You can find this in the ```github_leaderboard/app/models.py``` file.
